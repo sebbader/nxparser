@@ -14,6 +14,8 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 
+import org.glassfish.jersey.client.ClientRequest;
+
 import org.semanticweb.yars.nx.Node;
 
 /**
@@ -39,8 +41,8 @@ import org.semanticweb.yars.nx.Node;
  *
  */
 public abstract class AbstractRDFMessageBodyReaderWriter implements
-		MessageBodyWriter<Iterable<Node[]>>,
-		MessageBodyReader<Iterable<Node[]>> {
+MessageBodyWriter<Iterable<Node[]>>,
+MessageBodyReader<Iterable<Node[]>> {
 
 	static Charset UTF_8 = Charset.forName("utf-8"); // StandardCharsets.UTF_8
 
@@ -49,6 +51,9 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 
 	@Context
 	Request _request;
+
+	@Context
+	ClientRequest _clientrequest;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -160,7 +165,17 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 
 	public String getBaseURIStringdependingOnPutPost() {
 		String baseURI;
-		if (HttpMethod.POST.equals(_request.getMethod()))
+
+
+		if (_request != null && HttpMethod.POST.equals(_request.getMethod()))
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_STRING;
+		else if (_clientrequest != null && HttpMethod.POST.equals(_clientrequest.getMethod()))
+			// when used by jax-rs client the context is written in a
+			// ClientRequest object
+			
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
@@ -172,7 +187,15 @@ public abstract class AbstractRDFMessageBodyReaderWriter implements
 
 	public URI getBaseURIdependingOnPutPost() {
 		URI baseURI;
-		if (HttpMethod.POST.equals(_request.getMethod()))
+		if (_request != null && HttpMethod.POST.equals(_request.getMethod()))
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
+		else if (_clientrequest != null && HttpMethod.POST.equals(_clientrequest.getMethod()))
+			// when used by jax-rs client the context is written in a
+			// ClientRequest object
+			
 			// In case of a POST request, we cannot determine the URI against
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.

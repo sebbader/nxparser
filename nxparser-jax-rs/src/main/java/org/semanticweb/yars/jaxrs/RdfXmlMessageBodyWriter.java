@@ -64,7 +64,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException,
-			WebApplicationException {
+	WebApplicationException {
 
 		// inspired by Linked Data-Fu
 
@@ -94,8 +94,14 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 			try {
 				xmlwriter.writeStartElement("rdf:Description");
 				if (na[0] instanceof Resource) {
-					URI u = uriinfo.relativize(((Resource)na[0]).toURI());
-					xmlwriter.writeAttribute("rdf:about", u.toString());
+					if (uriinfo == null) {
+						//client side
+						String subject = ((Resource)na[0]).getLabel();
+						xmlwriter.writeAttribute("rdf:about", subject);
+					} else {
+						URI u = uriinfo.relativize(((Resource)na[0]).toURI());
+						xmlwriter.writeAttribute("rdf:about", u.toString());
+					}
 				} else if (na[0] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[0].getLabel());
 				}
@@ -123,14 +129,20 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 				if (na[2] instanceof BNode) {
 					xmlwriter.writeAttribute("rdf:nodeID", na[2].getLabel());
 				} else if (na[2] instanceof Resource) {
-					URI u = uriinfo.relativize(((Resource)na[2]).toURI());
-					xmlwriter.writeAttribute("rdf:resource", u.toString());
+					if (uriinfo == null) {
+						//client side
+						URI u = ((Resource)na[2]).toURI();
+						xmlwriter.writeAttribute("rdf:resource", u.toString());
+					} else {
+						URI u = uriinfo.relativize(((Resource)na[2]).toURI());
+						xmlwriter.writeAttribute("rdf:resource", u.toString());
+					}
 				} else if (na[2] instanceof Literal) {
 					Literal l = (Literal) na[2];
 
 					if (l.getLanguageTag() != null) {
 						xmlwriter
-								.writeAttribute("xml:lang", l.getLanguageTag());
+						.writeAttribute("xml:lang", l.getLanguageTag());
 					} else if (l.getDatatype() != null) {
 						xmlwriter.writeAttribute("rdf:datatype", l
 								.getDatatype().getLabel());
@@ -170,7 +182,7 @@ public class RdfXmlMessageBodyWriter extends AbstractRDFMessageBodyReaderWriter 
 	public Iterable<Node[]> readFrom(Class<Iterable<Node[]>> type,
 			Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-			throws IOException, WebApplicationException {
+					throws IOException, WebApplicationException {
 		RdfXmlParserIterator nxp = new RdfXmlParserIterator();
 
 		try {

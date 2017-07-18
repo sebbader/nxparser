@@ -11,6 +11,7 @@
 
 	<artifactId>nxparser-jax-rs</artifactId>
 	<packaging>jar</packaging>
+	<version>3.0.1-SNAPSHOT</version>
 	<name>NxParser Readers/Writers for JAX-RS</name>
 
 	<dependencies>
@@ -38,6 +39,13 @@
 			<version>2.17</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<version>2.25.1</version>
+			<artifactId>jersey-client</artifactId>
+		</dependency>
+		
+		
 		<dependency>
 			<groupId>org.semanticweb.yars</groupId>
 			<artifactId>

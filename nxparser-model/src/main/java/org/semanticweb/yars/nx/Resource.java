@@ -84,6 +84,7 @@ public class Resource implements Node, Serializable {
 	 */
 	@Deprecated
 	public String getUriString() {
+		if (_data.equalsIgnoreCase("<>")) return "";
 		return NxUtil.unescape(toString().substring(1,
 				toString().length() - 1));
 	}
