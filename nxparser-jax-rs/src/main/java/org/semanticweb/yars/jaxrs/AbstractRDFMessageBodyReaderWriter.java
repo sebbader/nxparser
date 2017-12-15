@@ -200,6 +200,19 @@ MessageBodyReader<Iterable<Node[]>> {
 			// which relative URIs should be resolved on this level of
 			// processing. The resolving is to be done on application level.
 			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
+		else if (_request != null && HttpMethod.PUT.equals(_request.getMethod()))
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
+		else if (_clientrequest != null && HttpMethod.PUT.equals(_clientrequest.getMethod()))
+			// when used by jax-rs client the context is written in a
+			// ClientRequest object
+			
+			// In case of a POST request, we cannot determine the URI against
+			// which relative URIs should be resolved on this level of
+			// processing. The resolving is to be done on application level.
+			baseURI = org.semanticweb.yars.util.Util.THIS_URI;
 		else
 			baseURI = _uriinfo.getAbsolutePath();
 		return baseURI;
