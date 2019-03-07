@@ -66,7 +66,15 @@ public class TurtleMessageBodyReader extends AbstractRDFMessageBodyReaderWriter 
 			OutputStream entityStream) throws IOException,
 			WebApplicationException {
 		CharOutputSink cs = new CharOutputSink(getCharset(mediaType));
-		cs.setBaseUri(_uriinfo.getAbsolutePath().toString());
+		
+		//sba start:
+		if (_uriinfo == null) {
+			cs.setBaseUri(org.semanticweb.yars.util.Util.THIS_URI.toString());
+		} else {
+			cs.setBaseUri(_uriinfo.getAbsolutePath().toString());
+		}
+		//sba end
+		
 		cs.connect(entityStream);
 		TripleSink ts = TurtleSerializer.connect((CharSink) cs);
 
