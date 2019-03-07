@@ -9,7 +9,9 @@
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
+	<groupId>org.semanticweb.yars</groupId>
 	<artifactId>nxparser-jax-rs</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>NxParser Readers/Writers for JAX-RS</name>
 
